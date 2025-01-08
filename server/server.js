@@ -10,6 +10,7 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Настройка подключения к базе данных через переменные окружения
 const connection = mysql.createConnection({
