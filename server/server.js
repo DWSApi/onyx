@@ -6,6 +6,7 @@ const mysql = require("mysql2");
 require("dotenv").config(); // Загрузка переменных окружения
 
 const app = express();
+const path = require("path");
 
 // Middleware
 app.use(cors());
@@ -123,7 +124,6 @@ app.get("/", (req, res) => {
     res.send("Сервер работает! Добро пожаловать в API.");
 });
 
-const path = require("path");
 
 // Настройка для отдачи статических файлов React
 app.use(express.static(path.join(__dirname, "client/build")));
