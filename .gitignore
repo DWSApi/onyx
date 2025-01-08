@@ -4,14 +4,10 @@ npm-debug.log*
 node_modules
 client/node_modules
 build/
-*.env
 
 # Logs
 logs
 *.log
-
-# Environment variables
-.env
 
 # Build output
 build
