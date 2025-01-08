@@ -29,6 +29,9 @@ connection.connect((err) => {
     console.log("Успешное подключение к базе данных");
 });
 
+// Настройка для отдачи статических файлов React
+app.use(express.static(path.join(__dirname, "client/build"))); // Это добавляем здесь
+
 // Функция для аутентификации токена
 const authenticateToken = (req, res, next) => {
     const token = req.header("Authorization")?.split(" ")[1];
@@ -176,6 +179,7 @@ app.delete("/admin/users/:id", authenticateToken, verifyAdmin, (req, res) => {
 });
 
 // Запуск сервера
-app.listen(5000, () => {
-    console.log("Сервер запущен на порту 5000");
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+    console.log(`Сервер запущен на порту ${port}`);
 });
