@@ -10,7 +10,10 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'client/build')));
+
+// Отдача статических файлов React
+app.use(express.static(path.join(__dirname, '../client/build')));
+
 
 // Настройка подключения к базе данных через переменные окружения
 const connection = mysql.createConnection({
@@ -29,9 +32,6 @@ connection.connect((err) => {
     }
     console.log("Успешное подключение к базе данных");
 });
-
-// Настройка для отдачи статических файлов React
-app.use(express.static(path.join(__dirname, "client/build"))); // Это добавляем здесь
 
 // Функция для аутентификации токена
 const authenticateToken = (req, res, next) => {
@@ -88,8 +88,6 @@ app.post("/register", (req, res) => {
     });
 });
 
-
-
 // Маршрут для входа
 app.post("/login", (req, res) => {
     const { email, password } = req.body;
@@ -124,15 +122,10 @@ app.get("/", (req, res) => {
     res.send("Сервер работает! Добро пожаловать в API.");
 });
 
-
-// Настройка для отдачи статических файлов React
-app.use(express.static(path.join(__dirname, "client/build")));
-
 // Обработчик для всех остальных маршрутов
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "client/build", "index.html"));
 });
-
 
 // Маршрут для получения данных о текущем пользователе
 app.get('/account', authenticateToken, (req, res) => {
