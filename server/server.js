@@ -4,9 +4,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const mysql = require("mysql2");
 require("dotenv").config(); // Загрузка переменных окружения
-
-const app = express();
 const path = require("path");
+const app = express();
 
 // Middleware
 app.use(cors());
