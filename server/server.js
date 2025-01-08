@@ -3,27 +3,30 @@ const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const mysql = require("mysql2");
+require("dotenv").config(); // Загрузка переменных окружения
+
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Создание подключения к базе данных
+// Настройка подключения к базе данных через переменные окружения
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '2886730069',
-    database: 'onyx_energo'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
 });
 
-// Подключение к базе данных
+// Проверка подключения
 connection.connect((err) => {
     if (err) {
-        console.error('Ошибка подключения к базе данных: ' + err.stack);
+        console.error("Ошибка подключения к базе данных:", err.stack);
         return;
     }
-    console.log('Подключено к базе данных onyx_energo.');
+    console.log("Успешное подключение к базе данных");
 });
 
 // Функция для аутентификации токена
