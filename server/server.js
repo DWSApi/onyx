@@ -115,6 +115,21 @@ app.post("/login", (req, res) => {
     });
 });
 
+// Обработчик для корневого маршрута
+app.get("/", (req, res) => {
+    res.send("Сервер работает! Добро пожаловать в API.");
+});
+
+const path = require("path");
+
+// Настройка для отдачи статических файлов React
+app.use(express.static(path.join(__dirname, "client/build")));
+
+// Обработчик для всех остальных маршрутов
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client/build", "index.html"));
+});
+
 
 // Маршрут для получения данных о текущем пользователе
 app.get('/account', authenticateToken, (req, res) => {
