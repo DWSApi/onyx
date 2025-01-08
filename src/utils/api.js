@@ -10,14 +10,24 @@ const api = axios.create({
 // Регистрация
 export const register = async (name, email, password) => {
     try {
-        console.log("Sending registration data:", { name, email, password });  // Логируем отправляемые данные
+        console.log("Sending registration data:", { name, email, password }); 
         const response = await api.post("/register", { name, email, password });
         return response.data;
     } catch (error) {
         console.error("Registration error:", error.response ? error.response.data : error.message);
+
+        // Если сервер вернул конкретное сообщение об ошибке
+        if (error.response && error.response.data) {
+            const serverMessage = error.response.data.error || error.response.data.message || "Ошибка регистрации"; 
+            throw new Error(serverMessage);
+        }
+        
+
+        // Если сообщение отсутствует, выбрасываем стандартное
         throw new Error("Registration failed. Please try again.");
     }
 };
+
 
 
 
@@ -50,6 +60,20 @@ export const getAccountData = async (token) => {
     return await response.json();
 };
 
+export const getAccountDatas = async (token) => {
+    const response = await fetch("http://localhost:5000/apps", {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error('Ошибка при получении данных о пользователе');
+    }
+
+    return await response.json();
+};
 
 // Получение всех пользователей (админский маршрут)
 export const getAllUsers = async (token) => {

@@ -55,7 +55,9 @@ const verifyAdmin = (req, res, next) => {
 app.post("/register", (req, res) => {
     const { name, email, password } = req.body;
 
-    console.log("Registration request:", { name, email }); // Логируем полученные данные
+    if (password.length < 8) {
+        return res.status(400).json({ error: "Пароль слишком короткий. Минимальная длина пароля - 8 символов." });
+    }
 
     const checkQuery = 'SELECT * FROM users WHERE email = ?';
     connection.query(checkQuery, [email], (err, result) => {
@@ -65,28 +67,20 @@ app.post("/register", (req, res) => {
         }
 
         if (result.length > 0) {
-            console.log('Пользователь с таким email уже существует');
             return res.status(400).json({ error: 'Пользователь с таким email уже существует' });
         }
 
-        bcrypt.hash(password, 10, (err, hashedPassword) => {
+        const query = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
+        connection.query(query, [name, email, password], (err, result) => {
             if (err) {
-                console.error('Ошибка хэширования пароля: ', err);
-                return res.status(500).json({ error: 'Ошибка хэширования пароля' });
+                console.error('Ошибка регистрации пользователя: ', err);
+                return res.status(500).json({ error: 'Ошибка регистрации пользователя' });
             }
-
-            const query = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
-            connection.query(query, [name, email, hashedPassword], (err, result) => {
-                if (err) {
-                    console.error('Ошибка регистрации пользователя: ', err);
-                    return res.status(500).json({ error: 'Ошибка регистрации пользователя' });
-                }
-                console.log('Пользователь зарегистрирован успешно');
-                res.status(201).json({ message: 'Пользователь зарегистрирован успешно' });
-            });
+            res.status(201).json({ message: 'Пользователь зарегистрирован успешно' });
         });
     });
 });
+
 
 
 // Маршрут для входа
@@ -104,20 +98,20 @@ app.post("/login", (req, res) => {
             return res.status(404).json({ error: 'Пользователь не найден' });
         }
 
-        bcrypt.compare(password, result[0].password, (err, isMatch) => {
-            if (err || !isMatch) {
-                return res.status(401).json({ error: 'Неверный пароль' });
-            }
+        // Прямое сравнение паролей
+        if (password !== result[0].password) {
+            return res.status(401).json({ error: 'Неверный пароль' });
+        }
 
-            const token = jwt.sign(
-                { id: result[0].id, email: result[0].email, isAdmin: result[0].isAdmin }, // Добавляем isAdmin в токен
-                'secret_key',
-                { expiresIn: '1h' }
-            );
-            res.status(200).json({ token });
-        });
+        const token = jwt.sign(
+            { id: result[0].id, email: result[0].email, isAdmin: result[0].isAdmin },
+            'secret_key',
+            { expiresIn: '1h' }
+        );
+        res.status(200).json({ token });
     });
 });
+
 
 // Маршрут для получения данных о текущем пользователе
 app.get('/account', authenticateToken, (req, res) => {

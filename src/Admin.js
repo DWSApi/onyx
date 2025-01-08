@@ -1,73 +1,60 @@
 import React, { useState, useEffect } from "react";
 import { getAllUsers, deleteUser, getAccountData } from "./utils/api"; 
 import { useNavigate } from "react-router-dom"; 
+import { useAuth } from "./AuthContext"; // Хук для получения роли
 
 const AdminPanel = () => {
     const [users, setUsers] = useState([]);
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const { role, isAuthenticated, name } = useAuth();  // Получаем роль и имя пользователя
 
     useEffect(() => {
         const fetchUsers = async () => {
-            console.log("Fetching users...");
             const token = localStorage.getItem("token");
             if (!token) {
-                console.log("Token not found.");
                 setError("Токен не найден");
                 navigate("/login"); 
                 return;
             }
 
+            if (role !== "1") { // Если роль не "1", то доступ закрыт
+                setError("У вас нет прав для доступа к этой странице.");
+                navigate("/"); 
+                return;
+            }
+
             try {
-                // Получаем данные текущего пользователя
-                console.log("Fetching current user...");
-                const currentUser = await getAccountData(token);
-                console.log("Current user:", currentUser);  // Логируем все данные                
-
-                // Проверка, является ли текущий пользователь администратором (если isAdmin == 1)
-                console.log("isAdmin value:", currentUser.isAdmin);  // Логируем значение isAdmin
-                if (currentUser.isAdmin != 1) {
-                    console.log("User is not admin.");
-                    setError("У вас нет прав для доступа к этой странице.");
-                    navigate("/"); 
-                    return;
-                }
-                
-                
-
-                // Получаем список всех пользователей
-                console.log("Fetching all users...");
                 const data = await getAllUsers(token);
-                console.log("Users data:", data);
                 setUsers(data);
             } catch (error) {
-                console.error("Error fetching users:", error);
                 setError("Ошибка подключения к серверу.");
             }
         };
 
-        fetchUsers();
-    }, [navigate]);
+        if (isAuthenticated) { // Проверяем, авторизован ли пользователь
+            fetchUsers();
+        } else {
+            setError("Пожалуйста, войдите в систему.");
+            navigate("/login");
+        }
+    }, [role, isAuthenticated, navigate]);
 
     const handleDeleteUser = async (id) => {
-        console.log(`Deleting user with id ${id}...`);
         const token = localStorage.getItem("token");
         if (!token) {
-            console.log("Token not found.");
             setError("Токен не найден");
             return;
         }
 
         try {
             const data = await deleteUser(id, token);
-            console.log("Delete response:", data);
             if (data.success) {
-                setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));  // Обновление списка пользователей
+                setUsers(prevUsers => prevUsers.filter(user => user.id !== id)); 
             } else {
                 setError(data.message || "Не удалось удалить пользователя.");
             }
         } catch (error) {
-            console.error("Error deleting user:", error);
             setError("Ошибка удаления пользователя.");
         }
     };
@@ -76,6 +63,7 @@ const AdminPanel = () => {
         <div className="admin-panel">
             <h2>Панель администратора</h2>
             {error && <p className="error">{error}</p>}
+            <p>Добро пожаловать, {name}!</p> {/* Добавили приветствие с именем */}
             {users.length > 0 ? (
                 <ul className="Admins">
                     {users.map((user) => (
@@ -88,7 +76,7 @@ const AdminPanel = () => {
                     ))}
                 </ul>
             ) : (
-                <p>Пользователи не найдены.</p>
+                !error && <p>Пользователи не найдены.</p>
             )}
         </div>
     );

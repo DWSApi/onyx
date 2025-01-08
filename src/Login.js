@@ -1,36 +1,31 @@
 import React, { useState } from "react";
 import { login } from './utils/api';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from "jwt-decode";  // Изменен импорт
+import { jwtDecode } from "jwt-decode"; // Исправленный импорт
+import { useAuth } from "./AuthContext"; // Импорт контекста авторизации
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");  
-    const navigate = useNavigate();  
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
+    const { updateAuthState } = useAuth(); // Используем функцию для обновления состояния
 
     const handleLogin = async (e) => {
-        e.preventDefault(); // Останавливает перезагрузку страницы при отправке формы
-        console.log("Attempting login...");
-        setError("");  
+        e.preventDefault();
+        setError("");
 
         try {
             const response = await login(email, password);
-            console.log("Login response:", response);
-    
             if (response.token) {
-                console.log("Login successful. Token:", response.token);
-                localStorage.setItem("token", response.token);  
-    
-                // Декодирование токена для извлечения isAdmin
-                const decodedToken = jwtDecode(response.token); // Используем jwtDecode
+                const decodedToken = jwtDecode(response.token);
                 const isAdmin = decodedToken.isAdmin || false;
-                console.log("User is admin:", isAdmin);
-                localStorage.setItem("isAdmin", isAdmin ? "true" : "false");
-    
-                navigate("/");  
+
+                // Обновляем состояние в контексте
+                updateAuthState(response.token, isAdmin);
+
+                navigate("/");
             } else {
-                console.log("Login failed. Invalid credentials.");
                 setError("Не удалось войти. Проверьте введенные данные.");
             }
         } catch (error) {
@@ -38,11 +33,11 @@ const Login = () => {
             setError("Ошибка при логине. Пожалуйста, попробуйте снова.");
         }
     };
-    
+
     return (
-        <div>
+        <div className="Login">
             <h2>Login</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}  
+            {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleLogin}>
                 <input
                     type="email"
