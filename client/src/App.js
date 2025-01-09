@@ -9,6 +9,8 @@ import { getAccountData } from './utils/api'; // Подключение прав
 import { AuthProvider, useAuth } from "./AuthContext"; // Подключаем контекст
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import axios from "axios";  // Добавить эту строку
+
 
 // Основной компонент приложения
 function App() {
@@ -98,7 +100,7 @@ function Account() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth(); // Получаем статус аутентификации
-  
+
   const getAccountData = async (token) => {
     try {
       const response = await axios.get("/account", {
