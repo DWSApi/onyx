@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// Создание экземпляра axios для API
 const api = axios.create({
     baseURL: process.env.REACT_APP_API_URL || "http://localhost:10000",  // Использование переменной окружения для API URL
     headers: {
@@ -10,7 +11,9 @@ const api = axios.create({
 // Регистрация
 export const register = async (name, email, password) => {
     try {
-        console.log("Sending registration data:", { name, email, password }); 
+        if (process.env.NODE_ENV === 'development') {
+            console.log("Sending registration data:", { name, email, password });
+        }
         const response = await api.post("/register", { name, email, password });
         return response.data;
     } catch (error) {
@@ -18,24 +21,20 @@ export const register = async (name, email, password) => {
 
         // Если сервер вернул конкретное сообщение об ошибке
         if (error.response && error.response.data) {
-            const serverMessage = error.response.data.error || error.response.data.message || "Ошибка регистрации"; 
+            const serverMessage = error.response.data.error || error.response.data.message || "Ошибка регистрации";
             throw new Error(serverMessage);
         }
-        
 
         // Если сообщение отсутствует, выбрасываем стандартное
         throw new Error("Registration failed. Please try again.");
     }
 };
 
-
-
-
 // Логин
 export const login = async (email, password) => {
     console.log(`Logging in with email: ${email}`);
     try {
-        const response = await api.post('/login', { email, password });  // Исправлено на '/login'
+        const response = await api.post('/login', { email, password });
         console.log("Login API response:", response.data);
         return response.data;
     } catch (error) {
@@ -46,40 +45,35 @@ export const login = async (email, password) => {
 
 // Получение данных о текущем пользователе
 export const getAccountData = async (token) => {
-    const response = await fetch("http://localhost:10000/account", {
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`,
-        },
-    });
-
-    if (!response.ok) {
-        throw new Error('Ошибка при получении данных о пользователе');
+    try {
+        const response = await api.get("/account", {
+            headers: { "Authorization": `Bearer ${token}` },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching account data:", error);
+        throw error;
     }
-
-    return await response.json();
 };
 
+// Получение дополнительных данных о пользователе
 export const getAccountDatas = async (token) => {
-    const response = await fetch("http://localhost:10000/apps", {
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`,
-        },
-    });
-
-    if (!response.ok) {
-        throw new Error('Ошибка при получении данных о пользователе');
+    try {
+        const response = await api.get("/apps", {
+            headers: { "Authorization": `Bearer ${token}` },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching apps data:", error);
+        throw error;
     }
-
-    return await response.json();
 };
 
 // Получение всех пользователей (админский маршрут)
 export const getAllUsers = async (token) => {
     console.log("Fetching all users...");
     try {
-        const response = await api.get('/admin/users', {  // Исправлено на '/admin/users'
+        const response = await api.get('/admin/users', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         console.log("All users data:", response.data);
@@ -94,7 +88,7 @@ export const getAllUsers = async (token) => {
 export const deleteUser = async (id, token) => {
     console.log(`Deleting user with ID: ${id}`);
     try {
-        const response = await api.delete(`/admin/users/${id}`, {  // Исправлено на '/admin/users/{id}'
+        const response = await api.delete(`/admin/users/${id}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         console.log("Delete user response:", response.data);
