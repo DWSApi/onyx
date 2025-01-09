@@ -110,10 +110,12 @@ app.post("/login", (req, res) => {
         }
 
         const token = jwt.sign(
-            { id: result[0].id, email: result[0].email, isAdmin: result[0].isAdmin },
+            { id: result[0].id, names: result[0].name, email: result[0].email, isAdmin: result[0].isAdmin },
             'secret_key',
             { expiresIn: '1h' }
         );
+        console.log(result.name, result.email)
+        console.log(names, email, id)
         res.status(200).json({ token });
     });
 });
