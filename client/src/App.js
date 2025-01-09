@@ -98,6 +98,19 @@ function Account() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth(); // Получаем статус аутентификации
+  
+  const getAccountData = async (token) => {
+    try {
+      const response = await axios.get("/account", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;  // Перебрасываем ошибку для обработки в catch
+    }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
