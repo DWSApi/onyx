@@ -14,17 +14,22 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         setError("");
-
+    
         try {
             const response = await login(email, password);
             if (response.token) {
-                const decodedToken = jwtDecode(response.token); // Декодируем токен
+                const decodedToken = jwtDecode(response.token);
+    
+                // Значения по умолчанию для имени и роли
+                const name = decodedToken.name || "Guest";  
+                const role = decodedToken.role || "user";  
+    
                 const isAdmin = decodedToken.isAdmin || false;
-
+    
                 // Обновляем состояние в контексте
-                updateAuthState(response.token, isAdmin);
-
-                navigate("/"); // Перенаправление после успешного логина
+                updateAuthState(response.token, role, name); // Передаем корректные данные
+    
+                navigate("/");  // Перенаправляем на главную страницу
             } else {
                 setError("Не удалось войти. Проверьте введенные данные.");
             }
@@ -33,6 +38,7 @@ const Login = () => {
             setError("Ошибка при логине. Пожалуйста, попробуйте снова.");
         }
     };
+    
 
     return (
         <div className="Login">
