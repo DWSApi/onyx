@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { login } from './utils/api';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from "jwt-decode"; // Исправленный импорт
+import jwtDecode from "jwt-decode"; // Исправленный импорт
 import { useAuth } from "./AuthContext"; // Импорт контекста авторизации
 
 const Login = () => {
@@ -20,11 +20,13 @@ const Login = () => {
             if (response.token) {
                 const decodedToken = jwtDecode(response.token);
                 const isAdmin = decodedToken.isAdmin || false;
+                const name = decodedToken.name;  // Получаем имя из токена
+                const role = decodedToken.role || "";  // Получаем роль из токена
 
                 // Обновляем состояние в контексте
-                updateAuthState(response.token, isAdmin);
+                updateAuthState(response.token, role, name); // Передаем корректные данные
 
-                navigate("/");
+                navigate("/");  // Перенаправляем на главную страницу
             } else {
                 setError("Не удалось войти. Проверьте введенные данные.");
             }
