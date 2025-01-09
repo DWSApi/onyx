@@ -400,6 +400,7 @@ function Apps() {
     message: "",
     dataroz: "",
     region: "",
+    document: "",
     purchaseType: "",
   });
 
@@ -412,8 +413,8 @@ function Apps() {
     e.preventDefault();
 
     // Проверка на обязательные поля и правильность данных
-    const { name, fio, phone, dataroz, region , message, purchaseType, } = formData;
-    if (!name || !fio || !phone || !dataroz || !region || !message || !purchaseType) {
+    const { name, fio, phone, dataroz, region, document, message, purchaseType, } = formData;
+    if (!name || !fio || !phone || !dataroz || !region || !message || !purchaseType || !document) {
       alert("Пожалуйста, заполните все обязательные поля.");
       return;
     }
@@ -425,11 +426,12 @@ function Apps() {
       phone,
       dataroz,
       region,
+      document,
       message,
       purchaseType,
     };
 
-    fetch("https://script.google.com/macros/s/AKfycby7tELDgh5KOyroKm3_BCPWG8mWU7nLWHda2YocntdxvaxHuapk5_CTZCIUb1JFqQW3eg/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbzOkHwxjikoC6CwLFUdJ58dCFyKsmUrRht1v90T2r6HB3L60J0z7Yvy4nQmL-8vvJSbPg/exec", {
       method: "POST",
       body: new URLSearchParams(data),
       headers: {
@@ -537,6 +539,15 @@ function Apps() {
                       value={formData.region}
                       onChange={handleChange}
                       placeholder="Регион"
+                      required
+                      style={{ padding: '10px', marginBottom: '10px', fontSize: '16px', border: '1px solid #ccc', borderRadius: '5px' }}
+                    />
+                                        <input
+                      type="text"
+                      name="document"
+                      value={formData.document}
+                      onChange={handleChange}
+                      placeholder="Документ Клиента"
                       required
                       style={{ padding: '10px', marginBottom: '10px', fontSize: '16px', border: '1px solid #ccc', borderRadius: '5px' }}
                     />
