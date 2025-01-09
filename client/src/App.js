@@ -10,7 +10,7 @@ import { AuthProvider, useAuth } from "./AuthContext"; // Подключаем �
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import axios from "axios";  // Добавить эту строку
-
+import myImage from './onyx.png';
 
 
 // Основной компонент приложения
@@ -45,6 +45,7 @@ const Header = () => {
   return (
     <header className="header">
       <div className="logo">Энергосбыт</div>
+      <img src={myImage} style={{width: "60px"}} alt="Описание" />
       <nav>
         <Link to="/">Home</Link>
         <Link to="/services">Services</Link>
@@ -206,8 +207,8 @@ const Modal = ({ id, title, content }) => {
       aria-hidden="true"
     >
       <div className="modal-dialog modal-lg">
-        <div className="modal-content">
-          <div className="modal-header">
+        <div className="modal-content" style={{backgroundColor: '#F0FFFF',}}>
+          <div className="modal-header" style={{backgroundColor: '#F0FFFF',}}>
             <h5 className="modal-title">{title}</h5>
             <button
               type="button"
@@ -218,10 +219,10 @@ const Modal = ({ id, title, content }) => {
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div className="modal-body">
+          <div className="modal-body" style={{backgroundColor: '#F0FFFF',}}>
             <h5>{content}</h5>
           </div>
-          <div className="modal-footer">
+          <div className="modal-footer" style={{backgroundColor: '#F0FFFF',}}>
             <button
               type="button"
               className="btn btn-secondary"
@@ -460,7 +461,7 @@ function Apps() {
 
   return (
     <main>
-      <section className="py-5 text-center">
+      <section className="py-5 text-center" style={{backgroundColor: '#F0FFFF',}}>
         <div className="row">
           {/* Левая часть (4 колонки) с модальными окнами "ДАНЯ" */}
           <div className="col-4">
@@ -503,7 +504,7 @@ function Apps() {
                 id="info"
                 title="Информация о клиенте"
                 content={
-                  <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '10px', boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)', maxWidth: '400px', margin: '0 auto' }}>
+                  <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', padding: '20px', backgroundColor: '#F0FFFF', borderRadius: '10px', boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)', maxWidth: '400px', margin: '0 auto' }}>
                     <input
                       type="text"
                       name="name"
@@ -606,7 +607,7 @@ function Apps() {
                 name="comment"
                 cols="100"
                 rows="5"
-                style={{ fontSize: "18px" }}
+                style={{ fontSize: "18px", backgroundColor: '#F0FFFF',}}
               />
             </div>
             <div className="d-flex justify-content-center">
@@ -621,12 +622,12 @@ function Apps() {
                   style={{
                     marginTop: "10px",
                     padding: '20px',
-                    backgroundColor: '#f8f9fa',
+                    backgroundColor: '#F0FFFF',
                     borderRadius: '10px',
                     boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
                     maxHeight: '400px',
                     overflowY: 'auto',
-                    width: '105%', // Увеличена ширина
+                    width: '100%', // Увеличена ширина
                   }}
             >
               <h3 className="fw-bold mb-0" style={{ textAlign: 'center', fontSize: '24px', marginBottom: '20px' }}></h3>
