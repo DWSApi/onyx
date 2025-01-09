@@ -31,17 +31,40 @@ export const register = async (name, email, password) => {
 };
 
 // Логин
+import api from './api'; // Убедитесь, что у вас правильно импортирован объект `api`
+
 export const login = async (email, password) => {
     console.log(`Logging in with email: ${email}`);
+    
     try {
+        // Отправляем запрос на сервер
         const response = await api.post('/login', { email, password });
-        console.log("Login API response:", response.data);
-        return response.data;
+
+        // Проверяем, есть ли данные в ответе
+        if (response && response.data) {
+            console.log("Login API response:", response.data);
+            return response.data; // Возвращаем данные, если все прошло успешно
+        } else {
+            throw new Error('Неверный формат данных от сервера');
+        }
     } catch (error) {
-        console.error("Login API error:", error);
-        throw error;
+        // Обрабатываем ошибку
+        if (error.response) {
+            // Сервер вернул ответ с ошибкой (например, 404 или 500)
+            console.error("Login API error response:", error.response);
+            throw new Error(`Ошибка на сервере: ${error.response.statusText}`);
+        } else if (error.request) {
+            // Ошибка, связанная с запросом (например, отсутствие ответа)
+            console.error("Login API error request:", error.request);
+            throw new Error('Ошибка запроса. Попробуйте снова.');
+        } else {
+            // Любая другая ошибка
+            console.error("Login API error:", error.message);
+            throw new Error('Ошибка входа. Попробуйте снова.');
+        }
     }
 };
+
 
 // Получение данных о текущем пользователе
 export const getAccountData = async (token) => {

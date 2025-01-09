@@ -129,7 +129,7 @@ app.get("*", (req, res) => {
 
 // Маршрут для получения данных о текущем пользователе
 app.get('/account', authenticateToken, (req, res) => {
-    const userId = req.user.id;
+    const userId = req.user.id;  // Получаем ID из декодированного токена
 
     const query = 'SELECT * FROM users WHERE id = ?';
     connection.query(query, [userId], (err, result) => {
@@ -145,6 +145,7 @@ app.get('/account', authenticateToken, (req, res) => {
         res.json(result[0]);
     });
 });
+
 
 // Пример использования функции проверки прав администратора
 app.get("/admin/users", authenticateToken, verifyAdmin, (req, res) => {

@@ -101,6 +101,27 @@ function Account() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    console.log("Token from localStorage:", token);  // Добавьте логирование для токена
+    if (!token) {
+      return;
+    }
+  
+    const fetchAccountData = async () => {
+      try {
+        const data = await getAccountData(token);
+        console.log("Account data:", data);  // Логируем полученные данные
+        setAccount(data);
+      } catch (error) {
+        console.error("Ошибка при получении данных пользователя:", error);
+        setError("Ошибка при загрузке данных.");
+      }
+    };
+  
+    fetchAccountData();
+  }, [navigate]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
     if (!token) {
       // Если нет токена, не делаем редирект, а показываем кнопки для входа/регистрации
       return;
