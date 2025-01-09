@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { login } from './utils/api';
 import { useNavigate } from 'react-router-dom';
-import jwtDecode from "jwt-decode";  // Исправленный импорт
+import { decode } from "jwt-decode";  // Используем именованный импорт
 import { useAuth } from "./AuthContext"; // Импорт контекста авторизации
 
 const Login = () => {
@@ -18,7 +18,7 @@ const Login = () => {
         try {
             const response = await login(email, password);
             if (response.token) {
-                const decodedToken = jwtDecode(response.token);  // Используем jwtDecode для декодирования токена
+                const decodedToken = decode(response.token);  // Используем decode для декодирования токена
                 console.log("Decoded Token:", decodedToken);  // Логирование для отладки
 
                 const isAdmin = decodedToken.isAdmin || false;
