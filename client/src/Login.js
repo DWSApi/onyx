@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { login } from './utils/api';
-import jwtDecode from "jwt-decode";  // Используем импорт по умолчанию
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode"; // Исправленный импорт
 import { useAuth } from "./AuthContext"; // Импорт контекста авторизации
 
 const Login = () => {
@@ -13,23 +13,18 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        setError(""); // Очистить предыдущие ошибки
+        setError("");
 
         try {
             const response = await login(email, password);
             if (response.token) {
-                const decodedToken = jwtDecode(response.token);  // Декодируем токен с помощью jwtDecode
-                console.log("Decoded Token:", decodedToken);  // Логирование для отладки
-
+                const decodedToken = jwtDecode(response.token);
                 const isAdmin = decodedToken.isAdmin || false;
-                const name = decodedToken.name;  // Получаем имя из токена
-                const role = decodedToken.role || "";  // Получаем роль из токена
 
                 // Обновляем состояние в контексте
-                updateAuthState(response.token, role, name); // Передаем корректные данные
+                updateAuthState(response.token, isAdmin);
 
-                // Перенаправляем на главную страницу после логина
-                navigate("/");  
+                navigate("/");
             } else {
                 setError("Не удалось войти. Проверьте введенные данные.");
             }
