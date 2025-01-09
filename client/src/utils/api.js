@@ -31,8 +31,6 @@ export const register = async (name, email, password) => {
 };
 
 // Логин
-import api from './api'; // Убедитесь, что у вас правильно импортирован объект `api`
-
 export const login = async (email, password) => {
     console.log(`Logging in with email: ${email}`);
     
