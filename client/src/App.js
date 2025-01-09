@@ -101,51 +101,35 @@ function Account() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log("Token from localStorage:", token);  // Добавьте логирование для токена
+    console.log("Token from localStorage:", token);  // Логируем полученный токен
+
     if (!token) {
-      return;
+      return;  // Если нет токена, не продолжаем выполнение
     }
-  
+
+    // Функция для получения данных пользователя
     const fetchAccountData = async () => {
       try {
         const data = await getAccountData(token);
-        console.log("Account data:", data);  // Логируем полученные данные
-        setAccount(data);
-      } catch (error) {
-        console.error("Ошибка при получении данных пользователя:", error);
-        setError("Ошибка при загрузке данных.");
-      }
-    };
-  
-    fetchAccountData();
-  }, [navigate]);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      // Если нет токена, не делаем редирект, а показываем кнопки для входа/регистрации
-      return;
-    }
-
-    const fetchAccountData = async () => {
-      try {
-        const data = await getAccountData(token);
-        setAccount(data);
+        console.log("Account data:", data);  // Логируем данные аккаунта
+        setAccount(data);  // Устанавливаем данные аккаунта в состояние
       } catch (error) {
         console.error("Ошибка при получении данных пользователя:", error);
         setError("Ошибка при загрузке данных.");
       }
     };
 
-    fetchAccountData();
-  }, [navigate]);
+    fetchAccountData();  // Вызов функции для получения данных
+  }, [navigate]);  // useEffect зависит от navigate (редиректа)
 
+  // Функция выхода
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("isAdmin");
-    navigate("/login");
+    navigate("/login");  // Перенаправляем на страницу входа
   };
 
+  // Если пользователь не аутентифицирован, показываем кнопки для входа/регистрации
   if (!isAuthenticated) {
     return (
       <div className="account">
@@ -156,14 +140,17 @@ function Account() {
     );
   }
 
+  // Если есть ошибка
   if (error) {
     return <div className="account"><p>{error}</p></div>;
   }
 
+  // Если данные пользователя ещё не загружены
   if (!account) {
     return <div className="account"><p>Загрузка...</p></div>;
   }
 
+  // Отображение данных аккаунта
   return (
     <div className="account">
       <h2>Мой аккаунт</h2>
