@@ -403,19 +403,21 @@ function Apps() {
     document: "",
     purchaseType: "",
   });
-
-
+  
+  // Функция для обработки изменений в форме
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  
+  // Ваш handleSubmit
   const handleSubmit = (e) => {
     e.preventDefault();
-  
-    // Проверка на обязательные поля и правильность данных
     const { name, fio, phone, dataroz, region, document, message, purchaseType } = formData;
     if (!name || !fio || !phone || !dataroz || !region || !message || !purchaseType || !document) {
       alert("Пожалуйста, заполните все обязательные поля.");
       return;
     }
   
-    // Отправка данных на Google Apps Script
     const data = {
       name,
       fio,
@@ -443,7 +445,6 @@ function Apps() {
         alert("Произошла ошибка при отправке данных.");
       })
       .finally(() => {
-        // Сброс состояния формы независимо от того, успешна ли отправка или нет
         setFormData({
           name: "",
           fio: "",
@@ -456,7 +457,6 @@ function Apps() {
         });
       });
   };
-
 
   return (
     <main>
