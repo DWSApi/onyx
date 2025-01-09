@@ -17,12 +17,13 @@ app.use(express.static(path.join(__dirname, '../client/build')));
 
 // Настройка подключения к базе данных через переменные окружения
 const connection = mysql.createConnection({
-    host: bp6j4tdgdx1ym8ajjqsq-mysql.services.clever-cloud.com,
-    user: bp6j4tdgdx1ym8ajjqsq,
-    password: nLyeJ4DcDk7wLCtsdMJC,
-    database: bp6j4tdgdx1ym8ajjqsq,
-    port: 3306,
+    host: process.env.DB_HOST,     // Используем переменную окружения
+    user: process.env.DB_USER,     // Используем переменную окружения
+    password: process.env.DB_PASSWORD, // Используем переменную окружения
+    database: process.env.DB_NAME, // Используем переменную окружения
+    port: process.env.DB_PORT,     // Используем переменную окружения
 });
+
 
 // Проверка подключения
 connection.connect((err) => {
