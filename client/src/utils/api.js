@@ -46,7 +46,7 @@ export const login = async (email, password) => {
 
 // Получение данных о текущем пользователе
 export const getAccountData = async (token) => {
-    const response = await fetch("http://localhost:5000/account", {
+    const response = await fetch("http://localhost:10000/account", {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`,
@@ -61,7 +61,7 @@ export const getAccountData = async (token) => {
 };
 
 export const getAccountDatas = async (token) => {
-    const response = await fetch("http://localhost:5000/apps", {
+    const response = await fetch("http://localhost:10000/apps", {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`,
